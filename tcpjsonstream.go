@@ -34,8 +34,8 @@ func main() {
 		}
 		// Handle connections in a new goroutine.
 		//go printRequest(conn)
-		//go parseRequest(conn)
-		go parseRequestFfjson(conn)
+		go parseRequest(conn)
+		//go parseRequestFfjson(conn)
 	}
 
 }
@@ -45,14 +45,14 @@ func printRequest(conn net.Conn) {
 		// will listen for message to process ending in newline (\n)
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		// output message received
-		fmt.Print( string(message))
+		fmt.Print(string(message))
 	}
 }
 
 func parseRequest(conn net.Conn) {
 	decoder := jstream.NewDecoder(conn, 0) // extract JSON values at a depth level of 1
 	for mv := range decoder.Stream() {
-		fmt.Printf("%v\n ", mv.Value)
+		fmt.Printf("%v\n ", mv.Value.(map[string]interface{}))
 	}
 }
 
