@@ -34,8 +34,9 @@ func main() {
 		}
 		// Handle connections in a new goroutine.
 		//go printRequest(conn)
-		go parseRequest(conn)
+		//go parseRequest(conn)
 		//go parseRequestFfjson(conn)
+		go parseRequestBufferedFfjson(conn)
 	}
 
 }
@@ -63,6 +64,17 @@ func parseRequestFfjson(conn net.Conn) {
 
 	for {
 		dec.DecodeReader(conn, &v)
+		fmt.Printf("%v\n ", v)
+	}
+}
+
+func parseRequestBufferedFfjson(conn net.Conn) {
+	scanner := bufio.NewScanner(conn)
+
+	var v map[string]interface{}
+
+	for scanner.Scan() {
+		ffjson.Unmarshal(scanner.Bytes(), &v)
 		fmt.Printf("%v\n ", v)
 	}
 }
